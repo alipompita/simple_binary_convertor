@@ -32,6 +32,16 @@
                 </div>
 
                 <form id="convertor">
+
+                    <div class="form-group container mb-3" style="text-align: left;">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="reverse">
+                            <label class="form-check-label" for="reverse">Reverse</label>
+                        </div>
+                    </div>
+
+
+
                     <div class="container">
                         <input type="text" id="input" placeholder="Input Binary" class="form-control">
 
@@ -64,20 +74,38 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script>
+
+        var reverse = false;
+
         $(document).ready(() => {
+
+            $('#reverse').click(() => {
+                reverse = document.querySelector('#reverse').checked;
+                if (reverse) {
+                    document.querySelector('#input').setAttribute('placeholder', "Input Decimal Number")
+                } else {
+                    document.querySelector('#input').setAttribute('placeholder', "Input Binary")
+                }
+            })
 
             document.querySelector('#convertor').addEventListener('submit', (e) => {
                 e.preventDefault();
                 let value = $('#input').val();
 
                 if (value.length > 0) {
-                    let decimal = toDecimal(value);
-
-                    if (decimal == null) {
-                        display('INVALID')
+                    let result = null;
+                    if (!reverse) {
+                        result = toDecimal(value);
+                    } else {
+                        if (!isNaN(value)) {
+                            result = toBinary(value);
+                        }
                     }
-
-                    display(decimal);
+                    if (result == null) {
+                        display('INVALID')
+                    } else {
+                        display(result);
+                    }
                 }
             })
 
@@ -93,20 +121,33 @@
 
         const toDecimal = (binary) => {
             let rev = binary.split('').reverse().join(''); //reverse the input string
-
             let result = 0;
-
             for (let i = 0; i < rev.length; i++) {
                 let char = rev[i];
-
                 if (char == '0') continue;
                 else if (char == '1') {
                     result += Math.pow(2, i);
                 } else return null;
             }
-
             return result;
+        }
 
+        const toBinary = (decimal) => {
+            let res = "";
+            decimal = Math.round(decimal);
+            while (decimal > 0) {
+                let c = decimal;
+                let r = c % 2;
+                decimal = Math.floor(decimal / 2);
+                res += '' + r;
+            }
+            return res.split('').reverse().join('');
+        }
+
+        const countTo = (count) => {
+            for (let i = 1; i <= count; i++) {
+                console.log(toBinary(i));
+            }
         }
     </script>
 </body>
